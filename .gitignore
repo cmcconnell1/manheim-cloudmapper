@@ -48,3 +48,9 @@ mailer.yml
 .direnv/
 .envrc
 .vscode/
+
+# secrets
+# once you've run terraform, created user and got the IAM creds update the below file
+# you can also use git-crypt which works well, but all users must have repo key.
+# uncomment after updating with sensitive data
+#cloudmapper.secret

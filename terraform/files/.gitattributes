@@ -1,0 +1,9 @@
+# could also use git-crypt to encrypt file but we just add to .gitignore as file gets copied to secure S3 bucket
+#secretfile filter=git-crypt diff=git-crypt
+#*.key filter=git-crypt diff=git-crypt
+#*.secret filter=git-crypt diff=git-crypt
+#*secret.yaml filter=git-crypt diff=git-crypt
+#*.token filter=git-crypt diff=git-crypt
+#*.password filter=git-crypt diff=git-crypt
+#secret.tfvars filter=git-crypt diff=git-crypt
+#config.json filter=git-crypt diff=git-crypt

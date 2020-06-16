@@ -30,14 +30,42 @@ Main Components
 Installation and Usage
 ----------------------
 
+### Deploy Prerequsite AWS Infrastructure
+##### Optional: Terraform IAC Prerequisite Deployment:
+- Deploy requisite AWS S3 bucket, IAM creds, policies, etc. with Terraform 
+  - (tested/validated with Terraform v0.11.14)
+  - Simply update the requisite Terraform vars file as needed and then:
+    ```console
+    cd terraform
+    terraform plan
+    terraform apply
+    ```
+  - Note: if using Terraform, after executing the above commands, get your new AWS users KEY and ID:
+    ```console
+    terraform show | grep 'cloudmapper_tf_setup_user'
+    cloudmapper_tf_setup_user_access_id = XXXXXXXXXXXXXXXXXXX
+    cloudmapper_tf_setup_user_secret_key = XXXXXXXXXXXXXXXXXXXXXXXXXXXX 
+    ```
+    - These values should must be included in your `env` file. See below for possible methods to keep this secure.
+  - Additional Options
+    - use git-crypt to protect sensitive info such as your env files (i.e.: see the `cloudmapper.secret` file).  This file must be updated with the AWS users credentials.
+
+##### Or Use An Alternate Method 
+If not using Terraform, use an alternative to provision the requisite AWS infrastructure and IAM credentials per your teams tools, etc.
+Note that the infrastructure must exist (S3 bucket, cloud user, IAM cred's, and permissions, creating a requisite config.json file and copying it to the S3 bucket, etc.) prior to running cloudmapper.
+
+
 **WARNING:** This project is NOT a Python package, this is a Docker image which contains cloudmapper code from [duo-labs](https://github.com/duo-labs/cloudmapper) as well as custom python code to support PagerDuty Alerting and AWS SES notifications.
 
-To use the docker image, execute a `docker run` command  on the `manheim/manheim-cloudmapper` image. Environment varaibles are required for the docker container to execute. The recommended way to set the environment variables is with the `--env-file` flag.
+### Run Docker image
+To use the docker image, execute a `docker run` command  on the `manheim/manheim-cloudmapper` image. Environment variables are required for the docker container to execute. The recommended way to set the environment variables is with the `--env-file` flag.
 ```
 docker run --env-file <env_file> manheim/manheim-cloudmapper:<tag>
 ```
 
-env-file example:
+##### env-file example 
+- (Note: see cloudmapper.secret file for required ENV vars):
+- The docker image will fail to complete a successful run, and therefore won't send the report if the expected variables are not found.
 ```
 S3_BUCKET=aws-account-us-east-1-cloudmapper
 ACCOUNT=aws-account
@@ -73,3 +101,5 @@ AWS_ACCESS_KEY_ID
 The following privilieges are required for the IAM user running cloudmapper:  
 `arn:aws:iam::aws:policy/SecurityAudit`  
 `arn:aws:iam::aws:policy/job-function/ViewOnlyAccess`
+
+The permissions for the user/account running the docker image must allow remote downloading the config.json from the S3 bucket to the local filesystem: ./config.json
